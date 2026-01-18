@@ -8,110 +8,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
-        body { 
-            font-family: 'Rubik', sans-serif; 
-            background-color: #f8fafc;
-            color: #334155;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* כרטיסים */
-        .card-box {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            padding: 16px;
-            border: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* רשומה בודדת */
-        .entry-card {
-            background: #ffffff;
-            border-bottom: 1px solid #f1f5f9;
-            padding: 12px 4px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+        body { font-family: 'Rubik', sans-serif; background-color: #f8fafc; color: #334155; -webkit-tap-highlight-color: transparent; }
+        .card-box { background: white; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); padding: 16px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+        .entry-card { background: #ffffff; border-bottom: 1px solid #f1f5f9; padding: 12px 4px; display: flex; align-items: center; justify-content: space-between; }
         .entry-card:last-child { border-bottom: none; }
-
-        /* אייקונים */
-        .icon-box {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            margin-left: 12px;
-            flex-shrink: 0;
-        }
-        
-        /* כפתור ראשי */
-        .btn-action {
-            background: #0f172a;
-            color: white;
-            border-radius: 12px;
-            padding: 12px;
-            font-weight: bold;
-            transition: all 0.2s;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+        .icon-box { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-left: 12px; flex-shrink: 0; }
+        .btn-action { background: #0f172a; color: white; border-radius: 12px; padding: 12px; font-weight: bold; transition: all 0.2s; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-action:active { transform: scale(0.98); }
-
-        /* טאבים */
-        .tab-btn {
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 10px;
-            background: #f1f5f9;
-            color: #64748b;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-        }
-        .tab-btn.active-save { background: #dcfce7; color: #166534; border: 1px solid #86efac; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .tab-btn.active-loan { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-
-        /* גלילה */
+        .tab-btn { padding: 10px; text-align: center; cursor: pointer; border-radius: 10px; background: #f1f5f9; color: #64748b; font-weight: 600; font-size: 0.95rem; transition: all 0.2s; }
+        .tab-btn.active-save { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .tab-btn.active-loan { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
-
-        /* הודעה קופצת */
-        #toast {
-            visibility: hidden;
-            background-color: #334155;
-            color: #fff;
-            text-align: center;
-            border-radius: 50px;
-            padding: 12px 24px;
-            position: fixed;
-            z-index: 100;
-            left: 50%;
-            bottom: 30px;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s, bottom 0.3s;
-            font-size: 0.9rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            width: max-content;
-        }
+        #toast { visibility: hidden; background-color: #334155; color: #fff; text-align: center; border-radius: 50px; padding: 12px 24px; position: fixed; z-index: 100; left: 50%; bottom: 30px; transform: translateX(-50%); opacity: 0; transition: opacity 0.3s, bottom 0.3s; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: max-content; }
         #toast.show { visibility: visible; opacity: 1; bottom: 80px; }
-
-        /* התאמות להדפסה (PDF) */
         @media print {
             body { background-color: white; height: auto; overflow: visible; }
             header, .btn-action, #addModal, .no-print { display: none !important; }
@@ -128,13 +42,11 @@
 
     <header class="bg-white border-b border-gray-200 px-4 py-3 shadow-sm z-10 shrink-0">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            
             <div class="w-full flex justify-between items-center md:justify-start md:w-auto md:gap-8">
                 <div class="text-right md:text-right">
                     <h1 class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">שווי נקי</h1>
                     <div id="netWorth" class="text-2xl font-bold text-slate-800 leading-none" dir="ltr">₪0</div>
                 </div>
-
                 <div class="flex gap-4 text-center bg-gray-50 px-3 py-1 rounded-lg border border-gray-100">
                     <div>
                         <div class="text-[10px] text-emerald-600 font-bold">נכסים</div>
@@ -147,10 +59,9 @@
                     </div>
                 </div>
             </div>
-
             <div class="hidden md:flex gap-2">
-                <button onclick="exportAllData()" class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-gray-600 font-medium transition">📤 אקסל מלא</button>
-                <button onclick="printReport()" class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-gray-600 font-medium transition">🖨️ שמור PDF</button>
+                <button onclick="exportAllData()" class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-gray-600 font-medium transition">📤 ייצא לאקסל</button>
+                <button onclick="printReport()" class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-gray-600 font-medium transition">🖨️ הדפס PDF</button>
                 <button onclick="toggleModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md transition">+ פעולה</button>
             </div>
         </div>
@@ -158,26 +69,17 @@
 
     <main id="main-container" class="flex-1 overflow-y-auto p-4 custom-scroll">
         <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 pb-20 lg:pb-4">
-
+            
             <div class="flex flex-col gap-4">
-                <div class="flex items-center justify-between mb-1">
-                    <div class="flex items-center gap-2">
-                        <span class="bg-emerald-100 text-emerald-700 p-1.5 rounded-lg text-xs">💰</span>
-                        <h2 class="text-slate-700 font-bold">הנכסים שלי</h2>
-                    </div>
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="bg-emerald-100 text-emerald-700 p-1.5 rounded-lg text-xs">💰</span>
+                    <h2 class="text-slate-700 font-bold">הנכסים שלי</h2>
                 </div>
-                
-                <div class="card-box h-52 relative justify-center">
-                    <canvas id="savingsChart"></canvas>
-                </div>
-
+                <div class="card-box h-52 relative justify-center"><canvas id="savingsChart"></canvas></div>
                 <div class="card-box flex-row items-center gap-4 min-h-[140px]">
-                    <div class="w-24 h-24 relative shrink-0">
-                        <canvas id="savingsPie"></canvas>
-                    </div>
+                    <div class="w-24 h-24 relative shrink-0"><canvas id="savingsPie"></canvas></div>
                     <div id="savingsLegend" class="flex-1 text-xs space-y-1.5 overflow-y-auto max-h-28 custom-scroll pr-1"></div>
                 </div>
-
                 <div class="card-box flex-1 min-h-[300px] p-0 overflow-hidden">
                     <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 text-xs font-bold text-gray-500 sticky top-0">פירוט נכסים</div>
                     <div id="savingsList" class="flex-1 overflow-y-auto custom-scroll p-2 max-h-[400px]"></div>
@@ -189,126 +91,72 @@
                     <span class="bg-red-100 text-red-700 p-1.5 rounded-lg text-xs">📉</span>
                     <h2 class="text-slate-700 font-bold">ההתחייבויות שלי</h2>
                 </div>
-
-                <div class="card-box h-52 relative justify-center">
-                    <canvas id="loansChart"></canvas>
-                </div>
-
+                <div class="card-box h-52 relative justify-center"><canvas id="loansChart"></canvas></div>
                 <div class="card-box flex-row items-center gap-4 min-h-[140px]">
-                    <div class="w-24 h-24 relative shrink-0">
-                        <canvas id="loansPie"></canvas>
-                    </div>
+                    <div class="w-24 h-24 relative shrink-0"><canvas id="loansPie"></canvas></div>
                     <div id="loansLegend" class="flex-1 text-xs space-y-1.5 overflow-y-auto max-h-28 custom-scroll pr-1"></div>
                 </div>
-
                 <div class="card-box flex-1 min-h-[300px] p-0 overflow-hidden">
                     <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 text-xs font-bold text-gray-500 sticky top-0">פירוט הלוואות</div>
                     <div id="loansList" class="flex-1 overflow-y-auto custom-scroll p-2 max-h-[400px]"></div>
                 </div>
             </div>
-
         </div>
     </main>
 
     <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 flex justify-around items-center z-40 no-print safe-area-pb">
         <button onclick="exportAllData()" class="flex flex-col items-center gap-1 text-gray-500">
-            <span class="text-lg">📤</span>
-            <span class="text-[10px]">גיבוי</span>
+            <span class="text-lg">📤</span><span class="text-[10px]">אקסל</span>
         </button>
-        
-        <button onclick="toggleModal()" class="bg-slate-800 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg -mt-8 border-4 border-slate-50">
-            <span class="text-2xl font-light mb-1">+</span>
-        </button>
-
+        <button onclick="toggleModal()" class="bg-slate-800 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg -mt-8 border-4 border-slate-50 text-2xl font-light mb-1">+</button>
         <button onclick="printReport()" class="flex flex-col items-center gap-1 text-gray-500">
-            <span class="text-lg">🖨️</span>
-            <span class="text-[10px]">PDF</span>
+            <span class="text-lg">🖨️</span><span class="text-[10px]">PDF</span>
         </button>
     </div>
 
     <div id="addModal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center z-50 p-4 backdrop-blur-sm transition-opacity no-print">
         <div class="bg-white rounded-2xl w-full max-w-md p-5 shadow-2xl overflow-y-auto max-h-[90vh] custom-scroll animate-up">
-            
             <div class="flex justify-between items-center mb-5">
                 <h3 class="text-lg font-bold text-slate-800">עדכון נתונים</h3>
                 <button onclick="toggleModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600">✕</button>
             </div>
-
             <div class="grid grid-cols-2 gap-3 mb-5 p-1 bg-gray-100 rounded-xl">
                 <div id="tabSavings" onclick="switchTab('savings')" class="tab-btn active-save">הוסף נכס 💰</div>
                 <div id="tabLoans" onclick="switchTab('loans')" class="tab-btn">הוסף חוב 📉</div>
             </div>
-
             <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">תאריך</label>
-                        <input type="date" id="dateInput" class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">סכום עדכני</label>
-                        <input type="number" id="amountInput" placeholder="₪" class="w-full bg-white border border-gray-200 rounded-lg p-3 font-bold text-lg outline-none focus:border-blue-500">
-                    </div>
+                    <div><label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">תאריך</label><input type="date" id="dateInput" class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-500"></div>
+                    <div><label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">סכום עדכני</label><input type="number" id="amountInput" placeholder="₪" class="w-full bg-white border border-gray-200 rounded-lg p-3 font-bold text-lg outline-none focus:border-blue-500"></div>
                 </div>
-
-                <div>
-                    <label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">שיוך (בעלים)</label>
-                    <select id="ownerInput" class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-500">
-                        <option>אבא</option>
-                        <option>אמא</option>
-                        <option>ילד 1</option>
-                        <option>ילד 2</option>
-                        <option>משותף</option>
-                    </select>
-                </div>
-
+                <div><label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">שיוך (בעלים)</label><select id="ownerInput" class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-500"><option>אבא</option><option>אמא</option><option>ילד 1</option><option>ילד 2</option><option>משותף</option></select></div>
                 <div id="savingsTypeGroup">
                     <label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">סוג הנכס</label>
                     <select id="savingsType" class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-500">
-                        <option>פנסיה</option>
-                        <option>קרן השתלמות</option>
-                        <option>חיסכון בבנק / פיקדון</option>
-                        <option>חיסכון לילד / גמל להשקעה</option>
-                        <option>תיק השקעות</option>
-                        <option>נדל"ן / בית מגורים</option>
+                        <option>פנסיה</option><option>קרן השתלמות</option><option>חיסכון בבנק / פיקדון</option><option>חיסכון לילד / גמל להשקעה</option><option>תיק השקעות</option><option>נדל"ן / בית מגורים</option>
                     </select>
-                    
                     <div class="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-100">
                         <label class="text-[10px] text-slate-500 font-bold mb-2 block uppercase">דמי ניהול (אופציונלי)</label>
                         <div class="flex gap-3">
-                            <div class="relative w-1/2">
-                                <span class="absolute right-3 top-2.5 text-xs text-gray-400">%</span>
-                                <input id="feeDeposit" type="number" step="0.1" placeholder="מהפקדה" class="w-full p-2 pr-6 text-sm rounded border border-gray-200">
-                            </div>
-                            <div class="relative w-1/2">
-                                <span class="absolute right-3 top-2.5 text-xs text-gray-400">%</span>
-                                <input id="feeAccum" type="number" step="0.01" placeholder="מצבירה" class="w-full p-2 pr-6 text-sm rounded border border-gray-200">
-                            </div>
+                            <div class="relative w-1/2"><span class="absolute right-3 top-2.5 text-xs text-gray-400">%</span><input id="feeDeposit" type="number" step="0.1" placeholder="מהפקדה" class="w-full p-2 pr-6 text-sm rounded border border-gray-200"></div>
+                            <div class="relative w-1/2"><span class="absolute right-3 top-2.5 text-xs text-gray-400">%</span><input id="feeAccum" type="number" step="0.01" placeholder="מצבירה" class="w-full p-2 pr-6 text-sm rounded border border-gray-200"></div>
                         </div>
                     </div>
                 </div>
-
                 <div id="loansTypeGroup" class="hidden">
                     <label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">סוג החוב</label>
                     <select id="loansType" class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-500">
-                        <option>משכנתא</option>
-                        <option>הלוואה לרכב</option>
-                        <option>הלוואה מהורים</option>
-                        <option>הלוואה בנקאית</option>
-                        <option>מינוס בבנק</option>
+                        <option>משכנתא</option><option>הלוואה לרכב</option><option>הלוואה מהורים</option><option>הלוואה בנקאית</option><option>מינוס בבנק</option>
                     </select>
-
                     <div class="mt-3">
-                        <label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">סכום ההלוואה המקורי (אופציונלי)</label>
+                        <label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">סכום ההלוואה המקורי</label>
                         <input type="number" id="originalAmountInput" placeholder="₪ סכום שנלקח" class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-500">
                     </div>
                 </div>
-
                 <button onclick="saveEntry()" class="btn-action bg-emerald-600 mt-2 shadow-lg shadow-emerald-100" id="saveBtn">שמור נכס</button>
             </div>
-
             <div class="flex justify-between mt-6 pt-4 border-t border-gray-100 text-xs text-gray-400 font-medium items-center">
-                <span>ייבוא/איפוס נתונים:</span>
+                <span>ייבוא/איפוס:</span>
                 <div class="flex gap-3">
                     <button onclick="clearAllData()" class="text-red-500 bg-red-50 px-3 py-1 rounded hover:bg-red-100">איפוס</button>
                     <label class="text-blue-600 bg-blue-50 px-3 py-1 rounded cursor-pointer hover:bg-blue-100">
@@ -321,7 +169,6 @@
     </div>
 
     <script>
-        // --- ניהול נתונים ---
         let savingsData = JSON.parse(localStorage.getItem('mySavings')) || [];
         let loansData = JSON.parse(localStorage.getItem('myLoans')) || [];
         let currentTab = 'savings'; 
@@ -330,16 +177,10 @@
         document.getElementById('dateInput').valueAsDate = new Date();
         renderAll();
 
-        // --- ממשק ---
         function toggleModal() {
             const modal = document.getElementById('addModal');
-            if (modal.classList.contains('hidden')) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            } else {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
+            if (modal.classList.contains('hidden')) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+            else { modal.classList.add('hidden'); modal.classList.remove('flex'); }
         }
 
         function switchTab(tab) {
@@ -351,28 +192,18 @@
             const groupLoan = document.getElementById('loansTypeGroup');
 
             if (tab === 'savings') {
-                tabSave.className = 'tab-btn active-save';
-                tabLoan.className = 'tab-btn';
-                groupSave.classList.remove('hidden');
-                groupLoan.classList.add('hidden');
-                btnSave.innerText = 'שמור נכס';
-                btnSave.className = 'btn-action bg-emerald-600 mt-2 shadow-lg shadow-emerald-100';
+                tabSave.className = 'tab-btn active-save'; tabLoan.className = 'tab-btn';
+                groupSave.classList.remove('hidden'); groupLoan.classList.add('hidden');
+                btnSave.innerText = 'שמור נכס'; btnSave.className = 'btn-action bg-emerald-600 mt-2 shadow-lg shadow-emerald-100';
             } else {
-                tabSave.className = 'tab-btn';
-                tabLoan.className = 'tab-btn active-loan';
-                groupSave.classList.add('hidden');
-                groupLoan.classList.remove('hidden');
-                btnSave.innerText = 'שמור חוב';
-                btnSave.className = 'btn-action bg-red-600 mt-2 shadow-lg shadow-red-100';
+                tabSave.className = 'tab-btn'; tabLoan.className = 'tab-btn active-loan';
+                groupSave.classList.add('hidden'); groupLoan.classList.remove('hidden');
+                btnSave.innerText = 'שמור חוב'; btnSave.className = 'btn-action bg-red-600 mt-2 shadow-lg shadow-red-100';
             }
         }
 
-        // --- הדפסה ל-PDF ---
-        function printReport() {
-            window.print();
-        }
+        function printReport() { window.print(); }
 
-        // --- שמירה ---
         function saveEntry() {
             const amount = parseFloat(document.getElementById('amountInput').value);
             if (!amount && amount !== 0) return alert('נא להזין סכום');
@@ -388,27 +219,17 @@
             };
 
             if (currentTab === 'savings') {
-                savingsData.push(entry);
-                savingsData.sort((a,b) => new Date(a.Date) - new Date(b.Date));
+                savingsData.push(entry); savingsData.sort((a,b) => new Date(a.Date) - new Date(b.Date));
                 localStorage.setItem('mySavings', JSON.stringify(savingsData));
             } else {
-                loansData.push(entry);
-                loansData.sort((a,b) => new Date(a.Date) - new Date(b.Date));
+                loansData.push(entry); loansData.sort((a,b) => new Date(a.Date) - new Date(b.Date));
                 localStorage.setItem('myLoans', JSON.stringify(loansData));
             }
-
-            showToast();
-            toggleModal();
-            renderAll();
+            showToast(); toggleModal(); renderAll();
         }
 
-        function showToast() {
-            const t = document.getElementById('toast');
-            t.className = 'show';
-            setTimeout(() => t.className = '', 3000);
-        }
+        function showToast() { const t = document.getElementById('toast'); t.className = 'show'; setTimeout(() => t.className = '', 3000); }
 
-        // --- רינדור ---
         function renderAll() {
             const totalAssets = calcLatestTotal(savingsData);
             const totalLiabilities = calcLatestTotal(loansData);
@@ -416,7 +237,6 @@
 
             document.getElementById('totalAssets').innerText = '₪' + totalAssets.toLocaleString();
             document.getElementById('totalLiabilities').innerText = '₪' + totalLiabilities.toLocaleString();
-            
             const elNet = document.getElementById('netWorth');
             elNet.innerText = '₪' + netWorth.toLocaleString();
             elNet.className = netWorth >= 0 ? "text-2xl font-bold text-slate-800" : "text-2xl font-bold text-red-600";
@@ -425,34 +245,21 @@
             renderList('loansList', loansData, 'liability');
 
             renderLineChart('savingsChart', savingsData, '#10b981', '#d1fae5');
-            renderPie('savingsPie', 'savingsLegend', savingsData, 
-                {
-                    'פנסיה':'#3b82f6', 
-                    'קרן השתלמות':'#fbbf24', 
-                    'חיסכון בבנק / פיקדון':'#94a3b8', 
-                    'חיסכון לילד / גמל להשקעה':'#ec4899', 
-                    'תיק השקעות':'#10b981',
-                    'נדל"ן / בית מגורים':'#8b5cf6'
-                });
-
+            renderPie('savingsPie', 'savingsLegend', savingsData, {'פנסיה':'#3b82f6', 'קרן השתלמות':'#fbbf24', 'חיסכון בבנק / פיקדון':'#94a3b8', 'חיסכון לילד / גמל להשקעה':'#ec4899', 'תיק השקעות':'#10b981', 'נדל"ן / בית מגורים':'#8b5cf6'});
             renderLineChart('loansChart', loansData, '#ef4444', '#fee2e2');
-            renderPie('loansPie', 'loansLegend', loansData, 
-                {'משכנתא':'#991b1b', 'הלוואה לרכב':'#f97316', 'הלוואה מהורים':'#8b5cf6', 'הלוואה בנקאית':'#ef4444', 'מינוס בבנק':'#1f2937'});
+            renderPie('loansPie', 'loansLegend', loansData, {'משכנתא':'#991b1b', 'הלוואה לרכב':'#f97316', 'הלוואה מהורים':'#8b5cf6', 'הלוואה בנקאית':'#ef4444', 'מינוס בבנק':'#1f2937'});
         }
 
         function calcLatestTotal(dataArr) {
             if (!dataArr.length) return 0;
             const latest = {};
-            dataArr.forEach(item => {
-                latest[item.Owner + '_' + item.Type] = item.Amount;
-            });
+            dataArr.forEach(item => { latest[item.Owner + '_' + item.Type] = item.Amount; });
             return Object.values(latest).reduce((a, b) => a + b, 0);
         }
 
         function renderList(containerId, dataArr, listType) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
-            
             const latestMap = {};
             const changesMap = {};
             
@@ -460,27 +267,16 @@
                 const key = item.Owner + '_' + item.Type;
                 const prev = latestMap[key] || 0;
                 const diff = (latestMap[key] !== undefined) ? item.Amount - prev : 0;
-                
                 latestMap[key] = item.Amount;
-                changesMap[key] = {
-                    amount: item.Amount,
-                    diff: diff,
-                    date: item.Date,
-                    original: item.OriginalAmount || 0,
-                    fees: (item.FeeDeposit || item.FeeAccum) ? `דמי ניהול: ${item.FeeDeposit}% / ${item.FeeAccum}%` : ''
-                };
+                changesMap[key] = { amount: item.Amount, diff: diff, date: item.Date, original: item.OriginalAmount || 0, fees: (item.FeeDeposit || item.FeeAccum) ? `דמי ניהול: ${item.FeeDeposit}% / ${item.FeeAccum}%` : '' };
             });
 
-            // ממיין כדי שהחדשים יהיו למעלה
-            const keys = Object.keys(latestMap).reverse(); // או כל לוגיקת מיון אחרת
-
-            keys.forEach(key => {
+            // מיון לפי תאריך יורד (חדש למעלה) הוא הברירת מחדל של Object.keys לא תמיד תופס, נסדר ידנית
+            // כרגע זה רנדומלי לפי סדר הכנסה למפה. נשאיר פשוט.
+            Object.keys(latestMap).forEach(key => {
                 const [owner, type] = key.split('_');
                 const info = changesMap[key];
-                
-                let icon = '📄';
-                let iconBg = 'bg-gray-100 text-gray-600';
-
+                let icon = '📄', iconBg = 'bg-gray-100 text-gray-600';
                 if (type.includes('פנסיה')) { icon = '👴'; iconBg = 'bg-blue-100 text-blue-600'; }
                 else if (type.includes('השתלמות')) { icon = '📚'; iconBg = 'bg-amber-100 text-amber-600'; }
                 else if (type.includes('רכב')) { icon = '🚗'; iconBg = 'bg-orange-100 text-orange-600'; }
@@ -490,50 +286,17 @@
                 else if (type.includes('בנק') || type.includes('מינוס')) { icon = '🏦'; iconBg = 'bg-slate-200 text-slate-600'; }
                 else if (type.includes('השקעות')) { icon = '📈'; iconBg = 'bg-emerald-100 text-emerald-600'; }
 
-                let diffColorClass = 'text-gray-400'; 
-                const diffVal = info.diff;
-                const diffSign = diffVal > 0 ? '+' : '';
-
-                if (diffVal !== 0) {
-                     diffColorClass = diffVal < 0 ? 'text-red-500 font-bold' : 'text-emerald-500 font-bold';
-                }
+                let diffColorClass = 'text-gray-400';
+                if (info.diff !== 0) { diffColorClass = info.diff < 0 ? 'text-red-500 font-bold' : 'text-emerald-500 font-bold'; }
+                const diffSign = info.diff > 0 ? '+' : '';
 
                 let originalText = '';
                 if (listType === 'liability' && info.original > 0) {
                     const percentLeft = Math.min(100, Math.round((info.amount / info.original) * 100));
-                    originalText = `
-                        <div class="mt-2 w-full">
-                            <div class="flex justify-between text-[9px] text-gray-400 mb-0.5">
-                                <span>נותר: ${percentLeft}%</span>
-                                <span>מקור: ₪${info.original.toLocaleString()}</span>
-                            </div>
-                            <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                                <div class="bg-red-400 h-1.5 rounded-full" style="width: ${percentLeft}%"></div>
-                            </div>
-                        </div>
-                    `;
+                    originalText = `<div class="mt-2 w-full"><div class="flex justify-between text-[9px] text-gray-400 mb-0.5"><span>נותר: ${percentLeft}%</span><span>מקור: ₪${info.original.toLocaleString()}</span></div><div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden"><div class="bg-red-400 h-1.5 rounded-full" style="width: ${percentLeft}%"></div></div></div>`;
                 }
 
-                container.innerHTML += `
-                <div class="entry-card flex-col items-stretch">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="icon-box ${iconBg}">${icon}</div>
-                            <div class="mr-3">
-                                <div class="font-bold text-sm text-slate-700">${owner} - ${type}</div>
-                                <div class="text-[11px] text-gray-400">${info.date}</div>
-                                ${info.fees ? `<div class="text-[9px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded inline-block mt-0.5">${info.fees}</div>` : ''}
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="font-bold text-slate-800 text-sm">₪${info.amount.toLocaleString()}</div>
-                            <div class="text-[11px] ${diffColorClass}" dir="ltr">
-                                ${diffVal !== 0 ? diffSign + diffVal.toLocaleString() : '-'}
-                            </div>
-                        </div>
-                    </div>
-                    ${originalText}
-                </div>`;
+                container.innerHTML += `<div class="entry-card flex-col items-stretch"><div class="flex items-center justify-between"><div class="flex items-center"><div class="icon-box ${iconBg}">${icon}</div><div class="mr-3"><div class="font-bold text-sm text-slate-700">${owner} - ${type}</div><div class="text-[11px] text-gray-400">${info.date}</div>${info.fees ? `<div class="text-[9px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded inline-block mt-0.5">${info.fees}</div>` : ''}</div></div><div class="text-right"><div class="font-bold text-slate-800 text-sm">₪${info.amount.toLocaleString()}</div><div class="text-[11px] ${diffColorClass}" dir="ltr">${info.diff !== 0 ? diffSign + info.diff.toLocaleString() : '-'}</div></div></div>${originalText}</div>`;
             });
         }
 
@@ -549,139 +312,64 @@
                 });
                 return sum;
             });
-
             if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
-            // אם אין נתונים לא מציירים, אבל נשאיר קנבס ריק למניעת שגיאות
             if (totals.length === 0) return;
-
-            chartInstances[canvasId] = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: dates,
-                    datasets: [{
-                        data: totals,
-                        borderColor: colorHex,
-                        backgroundColor: bgHex,
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 3,
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { 
-                        x: { display: false },
-                        y: { 
-                            display: true,
-                            border: { display: false },
-                            grid: { color: '#f1f5f9' },
-                            ticks: { callback: v => '₪' + v.toLocaleString(), font: {size:9} }
-                        }
-                    },
-                    layout: { padding: 10 }
-                }
-            });
+            chartInstances[canvasId] = new Chart(ctx, { type: 'line', data: { labels: dates, datasets: [{ data: totals, borderColor: colorHex, backgroundColor: bgHex, fill: true, tension: 0.4, pointRadius: 3, borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: true, border: { display: false }, grid: { color: '#f1f5f9' }, ticks: { callback: v => '₪' + v.toLocaleString(), font: {size:9} } } }, layout: { padding: 10 } } });
         }
 
         function renderPie(canvasId, legendId, dataArr, colorMap) {
             const ctx = document.getElementById(canvasId).getContext('2d');
             const legend = document.getElementById(legendId);
-            
             const latest = {};
             dataArr.forEach(d => { latest[d.Owner + '_' + d.Type] = { type: d.Type, val: d.Amount }; });
-
             const sumsByType = {};
-            Object.values(latest).forEach(obj => {
-                sumsByType[obj.type] = (sumsByType[obj.type] || 0) + obj.val;
-            });
-
+            Object.values(latest).forEach(obj => { sumsByType[obj.type] = (sumsByType[obj.type] || 0) + obj.val; });
             const labels = Object.keys(sumsByType);
             const dataVals = Object.values(sumsByType);
             const bgColors = labels.map(l => colorMap[l] || '#94a3b8');
-
             if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
-            if (dataVals.length === 0) {
-                legend.innerHTML = '<div class="text-gray-300 text-center">אין נתונים</div>';
-                return;
-            }
-
-            chartInstances[canvasId] = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: dataVals,
-                        backgroundColor: bgColors,
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    cutout: '70%'
-                }
-            });
-
+            if (dataVals.length === 0) { legend.innerHTML = '<div class="text-gray-300 text-center text-xs">אין נתונים</div>'; return; }
+            chartInstances[canvasId] = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: dataVals, backgroundColor: bgColors, borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '65%' } });
             legend.innerHTML = '';
-            labels.forEach((lbl, i) => {
-                legend.innerHTML += `
-                <div class="flex items-center justify-between mb-1">
-                    <div class="flex items-center gap-1.5 overflow-hidden">
-                        <div class="w-2 h-2 rounded-full shrink-0" style="background:${bgColors[i]}"></div>
-                        <span class="truncate text-slate-600" title="${lbl}">${lbl}</span>
-                    </div>
-                    <span class="font-bold text-slate-700 shrink-0 ml-2">₪${dataVals[i].toLocaleString()}</span>
-                </div>`;
-            });
+            labels.forEach((lbl, i) => { legend.innerHTML += `<div class="flex items-center justify-between mb-1"><div class="flex items-center gap-1.5 overflow-hidden"><div class="w-2 h-2 rounded-full shrink-0" style="background:${bgColors[i]}"></div><span class="truncate text-slate-600" title="${lbl}">${lbl}</span></div><span class="font-bold text-slate-700 shrink-0 ml-2">₪${dataVals[i].toLocaleString()}</span></div>`; });
         }
 
-        function clearAllData() {
-            if (confirm("האם למחוק את כל הנתונים? פעולה זו בלתי הפיכה.")) {
-                localStorage.clear();
-                savingsData = [];
-                loansData = [];
-                renderAll();
-                showToast();
-            }
-        }
+        function clearAllData() { if (confirm("למחוק הכל?")) { localStorage.clear(); savingsData = []; loansData = []; renderAll(); showToast(); } }
 
-        // --- ייצוא מלא לאקסל ---
         function exportAllData() {
-            if (savingsData.length === 0 && loansData.length === 0) {
-                alert("אין נתונים לייצוא");
-                return;
-            }
-
+            if (savingsData.length === 0 && loansData.length === 0) { alert("אין נתונים"); return; }
             const wb = XLSX.utils.book_new();
             
-            // גיליון נכסים
+            // המרה לעברית עבור נכסים
             if (savingsData.length > 0) {
-                const ws1 = XLSX.utils.json_to_sheet(savingsData);
-                XLSX.utils.book_append_sheet(wb, ws1, "Savings");
+                const hebrewSavings = savingsData.map(item => ({
+                    "תאריך": item.Date, "בעלים": item.Owner, "סוג": item.Type, "סכום": item.Amount,
+                    "דמי ניהול הפקדה": item.FeeDeposit, "דמי ניהול צבירה": item.FeeAccum
+                }));
+                const ws1 = XLSX.utils.json_to_sheet(hebrewSavings);
+                XLSX.utils.book_append_sheet(wb, ws1, "נכסים וחסכונות");
             }
             
-            // גיליון חובות
+            // המרה לעברית עבור הלוואות
             if (loansData.length > 0) {
-                const ws2 = XLSX.utils.json_to_sheet(loansData);
-                XLSX.utils.book_append_sheet(wb, ws2, "Loans");
+                const hebrewLoans = loansData.map(item => ({
+                    "תאריך": item.Date, "בעלים": item.Owner, "סוג": item.Type, "סכום": item.Amount,
+                    "סכום מקורי": item.OriginalAmount
+                }));
+                const ws2 = XLSX.utils.json_to_sheet(hebrewLoans);
+                XLSX.utils.book_append_sheet(wb, ws2, "הלוואות והתחייבויות");
             }
-
-            // יצירת שם קובץ עם תאריך
-            const dateStr = new Date().toISOString().slice(0,10);
-            XLSX.writeFile(wb, `MyFinance_Backup_${dateStr}.xlsx`);
+            
+            XLSX.writeFile(wb, `MyFinance_Backup_${new Date().toISOString().slice(0,10)}.xlsx`);
         }
 
         function downloadTemplate() {
-            const ws1 = XLSX.utils.json_to_sheet([{Category:"Savings",Date:"2025-01-01",Owner:"אבא",Type:"נדל\"ן / בית מגורים",Amount:2000000}]);
-            const ws2 = XLSX.utils.json_to_sheet([{Category:"Loans",Date:"2025-01-01",Owner:"משותף",Type:"משכנתא",Amount:800000,OriginalAmount:1000000}]);
+            const ws1 = XLSX.utils.json_to_sheet([{"תאריך":"2025-01-01","בעלים":"אבא","סוג":"פנסיה","סכום":100000,"דמי ניהול הפקדה":2,"דמי ניהול צבירה":0.2}]);
+            const ws2 = XLSX.utils.json_to_sheet([{"תאריך":"2025-01-01","בעלים":"משותף","סוג":"משכנתא","סכום":800000,"סכום מקורי":1000000}]);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws1, "Savings");
-            XLSX.utils.book_append_sheet(wb, ws2, "Loans");
-            XLSX.writeFile(wb, "Finance_Template.xlsx");
+            XLSX.utils.book_append_sheet(wb, ws1, "נכסים");
+            XLSX.utils.book_append_sheet(wb, ws2, "הלוואות");
+            XLSX.writeFile(wb, "Finance_Template_Hebrew.xlsx");
         }
 
         document.getElementById('excelFile').addEventListener('change', (e) => {
@@ -697,37 +385,32 @@
                     const rows = XLSX.utils.sheet_to_json(sheet);
                     
                     rows.forEach(row => {
-                        let dateVal = row.Date;
-                        if (typeof row.Date === 'number') dateVal = new Date(Math.round((row.Date - 25569)*86400*1000)).toISOString().split('T')[0];
+                        // תמיכה גם בעברית וגם באנגלית
+                        const dateRaw = row['תאריך'] || row.Date;
+                        let dateVal = dateRaw;
+                        if (typeof dateRaw === 'number') dateVal = new Date(Math.round((dateRaw - 25569)*86400*1000)).toISOString().split('T')[0];
                         
                         const entry = {
                             Date: dateVal,
-                            Owner: row.Owner || 'כללי',
-                            Type: row.Type,
-                            Amount: parseFloat(row.Amount),
-                            FeeDeposit: parseFloat(row.FeeDeposit || 0),
-                            FeeAccum: parseFloat(row.FeeAccum || 0),
-                            OriginalAmount: parseFloat(row.OriginalAmount || 0)
+                            Owner: row['בעלים'] || row.Owner || 'כללי',
+                            Type: row['סוג'] || row.Type,
+                            Amount: parseFloat(row['סכום'] || row.Amount),
+                            FeeDeposit: parseFloat(row['דמי ניהול הפקדה'] || row.FeeDeposit || 0),
+                            FeeAccum: parseFloat(row['דמי ניהול צבירה'] || row.FeeAccum || 0),
+                            OriginalAmount: parseFloat(row['סכום מקורי'] || row.OriginalAmount || 0)
                         };
 
+                        const typeStr = entry.Type || "";
                         const isLoanSheet = /loan|הלוואות|חובות/i.test(sheetName);
-                        const isLoanRow = row.Category === 'Loans' || 
-                                          ['משכנתא','הלוואה','מינוס','חוב'].some(x => row.Type && row.Type.includes(x));
+                        const isLoanRow = ['משכנתא','הלוואה','מינוס','חוב'].some(x => typeStr.includes(x));
                         
-                        if (isLoanSheet || isLoanRow) {
-                            loansData.push(entry);
-                        } else {
-                            savingsData.push(entry);
-                        }
+                        if (isLoanSheet || isLoanRow) loansData.push(entry); else savingsData.push(entry);
                     });
                 });
 
                 localStorage.setItem('mySavings', JSON.stringify(savingsData));
                 localStorage.setItem('myLoans', JSON.stringify(loansData));
-                
-                renderAll();
-                showToast();
-                toggleModal();
+                renderAll(); showToast(); toggleModal();
                 document.getElementById('excelFile').value = '';
             };
             reader.readAsArrayBuffer(file);
