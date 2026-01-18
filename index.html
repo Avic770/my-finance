@@ -60,7 +60,7 @@
                 </div>
             </div>
             <div class="hidden md:flex gap-2">
-                <button onclick="exportAllData()" class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-gray-600 font-medium transition">📤 ייצא לאקסל</button>
+                <button onclick="exportAllData()" class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-gray-600 font-medium transition">📤 ייצא אקסל</button>
                 <button onclick="printReport()" class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-gray-600 font-medium transition">🖨️ הדפס PDF</button>
                 <button onclick="toggleModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md transition">+ פעולה</button>
             </div>
@@ -76,10 +76,14 @@
                     <h2 class="text-slate-700 font-bold">הנכסים שלי</h2>
                 </div>
                 <div class="card-box h-52 relative justify-center"><canvas id="savingsChart"></canvas></div>
-                <div class="card-box flex-row items-center gap-4 min-h-[140px]">
-                    <div class="w-24 h-24 relative shrink-0"><canvas id="savingsPie"></canvas></div>
-                    <div id="savingsLegend" class="flex-1 text-xs space-y-1.5 overflow-y-auto max-h-28 custom-scroll pr-1"></div>
+                
+                <div class="card-box flex-row items-center gap-3 min-h-[150px]">
+                    <div class="w-32 h-32 relative shrink-0 flex items-center justify-center">
+                        <canvas id="savingsPie"></canvas>
+                    </div>
+                    <div id="savingsLegend" class="flex-1 text-xs space-y-1"></div>
                 </div>
+
                 <div class="card-box flex-1 min-h-[300px] p-0 overflow-hidden">
                     <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 text-xs font-bold text-gray-500 sticky top-0">פירוט נכסים</div>
                     <div id="savingsList" class="flex-1 overflow-y-auto custom-scroll p-2 max-h-[400px]"></div>
@@ -92,10 +96,14 @@
                     <h2 class="text-slate-700 font-bold">ההתחייבויות שלי</h2>
                 </div>
                 <div class="card-box h-52 relative justify-center"><canvas id="loansChart"></canvas></div>
-                <div class="card-box flex-row items-center gap-4 min-h-[140px]">
-                    <div class="w-24 h-24 relative shrink-0"><canvas id="loansPie"></canvas></div>
-                    <div id="loansLegend" class="flex-1 text-xs space-y-1.5 overflow-y-auto max-h-28 custom-scroll pr-1"></div>
+                
+                <div class="card-box flex-row items-center gap-3 min-h-[150px]">
+                    <div class="w-32 h-32 relative shrink-0 flex items-center justify-center">
+                        <canvas id="loansPie"></canvas>
+                    </div>
+                    <div id="loansLegend" class="flex-1 text-xs space-y-1"></div>
                 </div>
+
                 <div class="card-box flex-1 min-h-[300px] p-0 overflow-hidden">
                     <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 text-xs font-bold text-gray-500 sticky top-0">פירוט הלוואות</div>
                     <div id="loansList" class="flex-1 overflow-y-auto custom-scroll p-2 max-h-[400px]"></div>
@@ -106,7 +114,7 @@
 
     <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 flex justify-around items-center z-40 no-print safe-area-pb">
         <button onclick="exportAllData()" class="flex flex-col items-center gap-1 text-gray-500">
-            <span class="text-lg">📤</span><span class="text-[10px]">אקסל</span>
+            <span class="text-lg">📤</span><span class="text-[10px]">ייצא אקסל</span>
         </button>
         <button onclick="toggleModal()" class="bg-slate-800 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg -mt-8 border-4 border-slate-50 text-2xl font-light mb-1">+</button>
         <button onclick="printReport()" class="flex flex-col items-center gap-1 text-gray-500">
@@ -155,15 +163,16 @@
                 </div>
                 <button onclick="saveEntry()" class="btn-action bg-emerald-600 mt-2 shadow-lg shadow-emerald-100" id="saveBtn">שמור נכס</button>
             </div>
-            <div class="flex justify-between mt-6 pt-4 border-t border-gray-100 text-xs text-gray-400 font-medium items-center">
-                <span>ייבוא/איפוס:</span>
-                <div class="flex gap-3">
-                    <button onclick="clearAllData()" class="text-red-500 bg-red-50 px-3 py-1 rounded hover:bg-red-100">איפוס</button>
-                    <label class="text-blue-600 bg-blue-50 px-3 py-1 rounded cursor-pointer hover:bg-blue-100">
-                        טען אקסל 
-						<input type="file" id="excelFile" class="hidden">
+            <div class="flex flex-col gap-3 mt-6 pt-4 border-t border-gray-100">
+                <div class="text-xs font-bold text-gray-400">ניהול קבצים:</div>
+                <div class="flex gap-2">
+                    <button onclick="downloadTemplate()" class="flex-1 text-xs bg-indigo-50 text-indigo-600 py-2 rounded-lg border border-indigo-100 hover:bg-indigo-100 transition font-bold">📥 הורד תבנית ריקה</button>
+                    <label class="flex-1 text-xs bg-blue-50 text-blue-600 py-2 rounded-lg border border-blue-100 hover:bg-blue-100 transition text-center cursor-pointer font-bold">
+                        📂 טען אקסל
+                        <input type="file" id="excelFile" class="hidden" accept=".xlsx,.xls">
                     </label>
                 </div>
+                <button onclick="clearAllData()" class="text-xs text-red-400 hover:text-red-600 underline text-right">איפוס נתונים ומחיקת הכל</button>
             </div>
         </div>
     </div>
@@ -271,8 +280,6 @@
                 changesMap[key] = { amount: item.Amount, diff: diff, date: item.Date, original: item.OriginalAmount || 0, fees: (item.FeeDeposit || item.FeeAccum) ? `דמי ניהול: ${item.FeeDeposit}% / ${item.FeeAccum}%` : '' };
             });
 
-            // מיון לפי תאריך יורד (חדש למעלה) הוא הברירת מחדל של Object.keys לא תמיד תופס, נסדר ידנית
-            // כרגע זה רנדומלי לפי סדר הכנסה למפה. נשאיר פשוט.
             Object.keys(latestMap).forEach(key => {
                 const [owner, type] = key.split('_');
                 const info = changesMap[key];
@@ -329,7 +336,7 @@
             const bgColors = labels.map(l => colorMap[l] || '#94a3b8');
             if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
             if (dataVals.length === 0) { legend.innerHTML = '<div class="text-gray-300 text-center text-xs">אין נתונים</div>'; return; }
-            chartInstances[canvasId] = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: dataVals, backgroundColor: bgColors, borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '65%' } });
+            chartInstances[canvasId] = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: dataVals, backgroundColor: bgColors, borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '60%' } });
             legend.innerHTML = '';
             labels.forEach((lbl, i) => { legend.innerHTML += `<div class="flex items-center justify-between mb-1"><div class="flex items-center gap-1.5 overflow-hidden"><div class="w-2 h-2 rounded-full shrink-0" style="background:${bgColors[i]}"></div><span class="truncate text-slate-600" title="${lbl}">${lbl}</span></div><span class="font-bold text-slate-700 shrink-0 ml-2">₪${dataVals[i].toLocaleString()}</span></div>`; });
         }
@@ -339,27 +346,16 @@
         function exportAllData() {
             if (savingsData.length === 0 && loansData.length === 0) { alert("אין נתונים"); return; }
             const wb = XLSX.utils.book_new();
-            
-            // המרה לעברית עבור נכסים
             if (savingsData.length > 0) {
-                const hebrewSavings = savingsData.map(item => ({
-                    "תאריך": item.Date, "בעלים": item.Owner, "סוג": item.Type, "סכום": item.Amount,
-                    "דמי ניהול הפקדה": item.FeeDeposit, "דמי ניהול צבירה": item.FeeAccum
-                }));
+                const hebrewSavings = savingsData.map(item => ({ "תאריך": item.Date, "בעלים": item.Owner, "סוג": item.Type, "סכום": item.Amount, "דמי ניהול הפקדה": item.FeeDeposit, "דמי ניהול צבירה": item.FeeAccum }));
                 const ws1 = XLSX.utils.json_to_sheet(hebrewSavings);
-                XLSX.utils.book_append_sheet(wb, ws1, "נכסים וחסכונות");
+                XLSX.utils.book_append_sheet(wb, ws1, "נכסים");
             }
-            
-            // המרה לעברית עבור הלוואות
             if (loansData.length > 0) {
-                const hebrewLoans = loansData.map(item => ({
-                    "תאריך": item.Date, "בעלים": item.Owner, "סוג": item.Type, "סכום": item.Amount,
-                    "סכום מקורי": item.OriginalAmount
-                }));
+                const hebrewLoans = loansData.map(item => ({ "תאריך": item.Date, "בעלים": item.Owner, "סוג": item.Type, "סכום": item.Amount, "סכום מקורי": item.OriginalAmount }));
                 const ws2 = XLSX.utils.json_to_sheet(hebrewLoans);
-                XLSX.utils.book_append_sheet(wb, ws2, "הלוואות והתחייבויות");
+                XLSX.utils.book_append_sheet(wb, ws2, "הלוואות");
             }
-            
             XLSX.writeFile(wb, `MyFinance_Backup_${new Date().toISOString().slice(0,10)}.xlsx`);
         }
 
@@ -379,35 +375,23 @@
             reader.onload = (e) => {
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
-                
                 workbook.SheetNames.forEach(sheetName => {
                     const sheet = workbook.Sheets[sheetName];
                     const rows = XLSX.utils.sheet_to_json(sheet);
-                    
                     rows.forEach(row => {
-                        // תמיכה גם בעברית וגם באנגלית
                         const dateRaw = row['תאריך'] || row.Date;
                         let dateVal = dateRaw;
                         if (typeof dateRaw === 'number') dateVal = new Date(Math.round((dateRaw - 25569)*86400*1000)).toISOString().split('T')[0];
-                        
                         const entry = {
-                            Date: dateVal,
-                            Owner: row['בעלים'] || row.Owner || 'כללי',
-                            Type: row['סוג'] || row.Type,
-                            Amount: parseFloat(row['סכום'] || row.Amount),
-                            FeeDeposit: parseFloat(row['דמי ניהול הפקדה'] || row.FeeDeposit || 0),
-                            FeeAccum: parseFloat(row['דמי ניהול צבירה'] || row.FeeAccum || 0),
-                            OriginalAmount: parseFloat(row['סכום מקורי'] || row.OriginalAmount || 0)
+                            Date: dateVal, Owner: row['בעלים'] || row.Owner || 'כללי', Type: row['סוג'] || row.Type, Amount: parseFloat(row['סכום'] || row.Amount),
+                            FeeDeposit: parseFloat(row['דמי ניהול הפקדה'] || row.FeeDeposit || 0), FeeAccum: parseFloat(row['דמי ניהול צבירה'] || row.FeeAccum || 0), OriginalAmount: parseFloat(row['סכום מקורי'] || row.OriginalAmount || 0)
                         };
-
                         const typeStr = entry.Type || "";
                         const isLoanSheet = /loan|הלוואות|חובות/i.test(sheetName);
                         const isLoanRow = ['משכנתא','הלוואה','מינוס','חוב'].some(x => typeStr.includes(x));
-                        
                         if (isLoanSheet || isLoanRow) loansData.push(entry); else savingsData.push(entry);
                     });
                 });
-
                 localStorage.setItem('mySavings', JSON.stringify(savingsData));
                 localStorage.setItem('myLoans', JSON.stringify(loansData));
                 renderAll(); showToast(); toggleModal();
