@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ניהול הון והתחייבויות</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ניהול הון משפחתי</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,18 +16,21 @@
             font-family: 'Rubik', sans-serif; 
             background-color: #f8fafc;
             color: #334155;
+            -webkit-tap-highlight-color: transparent;
         }
 
+        /* כרטיסים */
         .card-box {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             padding: 16px;
             border: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
         }
 
+        /* רשומה בודדת */
         .entry-card {
             background: #ffffff;
             border-bottom: 1px solid #f1f5f9;
@@ -35,88 +38,109 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: background 0.2s;
         }
-        .entry-card:hover { background: #f8fafc; }
         .entry-card:last-child { border-bottom: none; }
 
+        /* אייקונים */
         .icon-box {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
-            margin-left: 10px;
+            font-size: 1.25rem;
+            margin-left: 12px;
             flex-shrink: 0;
         }
         
+        /* כפתור ראשי */
         .btn-action {
             background: #0f172a;
             color: white;
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 12px;
+            padding: 12px;
             font-weight: bold;
             transition: all 0.2s;
             width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        .btn-action:hover { background: #334155; }
+        .btn-action:active { transform: scale(0.98); }
 
+        /* טאבים */
         .tab-btn {
-            padding: 8px;
+            padding: 10px;
             text-align: center;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 10px;
             background: #f1f5f9;
             color: #64748b;
-            font-weight: 500;
-            font-size: 0.9rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
         }
-        .tab-btn.active-save { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-        .tab-btn.active-loan { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .tab-btn.active-save { background: #dcfce7; color: #166534; border: 1px solid #86efac; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .tab-btn.active-loan { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        /* גלילה */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
 
+        /* הודעה קופצת */
         #toast {
             visibility: hidden;
             background-color: #334155;
             color: #fff;
             text-align: center;
             border-radius: 50px;
-            padding: 10px 24px;
+            padding: 12px 24px;
             position: fixed;
-            z-index: 50;
+            z-index: 100;
             left: 50%;
             bottom: 30px;
             transform: translateX(-50%);
             opacity: 0;
             transition: opacity 0.3s, bottom 0.3s;
             font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: max-content;
         }
-        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+        #toast.show { visibility: visible; opacity: 1; bottom: 80px; }
+
+        /* התאמות להדפסה (PDF) */
+        @media print {
+            body { background-color: white; height: auto; overflow: visible; }
+            header, .btn-action, #addModal, .no-print { display: none !important; }
+            .card-box { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; margin-bottom: 20px; }
+            #main-container { overflow: visible !important; height: auto !important; padding: 0 !important; }
+            .hide-scroll { overflow: visible !important; }
+            canvas { max-width: 100% !important; height: auto !important; }
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden bg-slate-50">
 
     <div id="toast">✅ הנתונים נשמרו!</div>
 
-    <header class="bg-white border-b border-gray-200 px-6 py-3 shadow-sm z-10 shrink-0">
+    <header class="bg-white border-b border-gray-200 px-4 py-3 shadow-sm z-10 shrink-0">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             
-            <div class="flex items-center gap-6 w-full md:w-auto justify-center md:justify-start">
-                <div class="text-center md:text-right">
+            <div class="w-full flex justify-between items-center md:justify-start md:w-auto md:gap-8">
+                <div class="text-right md:text-right">
                     <h1 class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">שווי נקי</h1>
-                    <div id="netWorth" class="text-2xl font-bold text-slate-800" dir="ltr">₪0</div>
+                    <div id="netWorth" class="text-2xl font-bold text-slate-800 leading-none" dir="ltr">₪0</div>
                 </div>
-                <div class="h-8 w-px bg-gray-200"></div>
-                <div class="flex gap-4 text-center">
+
+                <div class="flex gap-4 text-center bg-gray-50 px-3 py-1 rounded-lg border border-gray-100">
                     <div>
                         <div class="text-[10px] text-emerald-600 font-bold">נכסים</div>
                         <div id="totalAssets" class="text-sm font-bold text-emerald-700">₪0</div>
                     </div>
+                    <div class="w-px bg-gray-200"></div>
                     <div>
                         <div class="text-[10px] text-red-500 font-bold">חובות</div>
                         <div id="totalLiabilities" class="text-sm font-bold text-red-600">₪0</div>
@@ -124,35 +148,39 @@
                 </div>
             </div>
 
-            <button onclick="toggleModal()" class="btn-action md:w-auto px-6 py-2 text-sm shadow-lg shadow-slate-200">
-                + פעולה חדשה
-            </button>
+            <div class="hidden md:flex gap-2">
+                <button onclick="exportAllData()" class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-gray-600 font-medium transition">📤 אקסל מלא</button>
+                <button onclick="printReport()" class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-gray-600 font-medium transition">🖨️ שמור PDF</button>
+                <button onclick="toggleModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md transition">+ פעולה</button>
+            </div>
         </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-4 custom-scroll">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+    <main id="main-container" class="flex-1 overflow-y-auto p-4 custom-scroll">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 pb-20 lg:pb-4">
 
             <div class="flex flex-col gap-4">
-                <div class="flex items-center gap-2 mb-1">
-                    <span class="bg-emerald-100 text-emerald-700 p-1.5 rounded-lg text-xs">💰</span>
-                    <h2 class="text-slate-700 font-bold">הנכסים שלי</h2>
+                <div class="flex items-center justify-between mb-1">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-emerald-100 text-emerald-700 p-1.5 rounded-lg text-xs">💰</span>
+                        <h2 class="text-slate-700 font-bold">הנכסים שלי</h2>
+                    </div>
                 </div>
                 
-                <div class="card-box h-48 relative justify-center">
+                <div class="card-box h-52 relative justify-center">
                     <canvas id="savingsChart"></canvas>
                 </div>
 
-                <div class="card-box flex-row items-center gap-6 min-h-[140px]">
+                <div class="card-box flex-row items-center gap-4 min-h-[140px]">
                     <div class="w-24 h-24 relative shrink-0">
                         <canvas id="savingsPie"></canvas>
                     </div>
                     <div id="savingsLegend" class="flex-1 text-xs space-y-1.5 overflow-y-auto max-h-28 custom-scroll pr-1"></div>
                 </div>
 
-                <div class="card-box flex-1 min-h-[250px] p-0 overflow-hidden">
-                    <div class="bg-gray-50 px-4 py-2 border-b border-gray-100 text-xs font-bold text-gray-500">פירוט נכסים</div>
-                    <div id="savingsList" class="flex-1 overflow-y-auto custom-scroll p-2 h-48"></div>
+                <div class="card-box flex-1 min-h-[300px] p-0 overflow-hidden">
+                    <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 text-xs font-bold text-gray-500 sticky top-0">פירוט נכסים</div>
+                    <div id="savingsList" class="flex-1 overflow-y-auto custom-scroll p-2 max-h-[400px]"></div>
                 </div>
             </div>
 
@@ -162,35 +190,51 @@
                     <h2 class="text-slate-700 font-bold">ההתחייבויות שלי</h2>
                 </div>
 
-                <div class="card-box h-48 relative justify-center">
+                <div class="card-box h-52 relative justify-center">
                     <canvas id="loansChart"></canvas>
                 </div>
 
-                <div class="card-box flex-row items-center gap-6 min-h-[140px]">
+                <div class="card-box flex-row items-center gap-4 min-h-[140px]">
                     <div class="w-24 h-24 relative shrink-0">
                         <canvas id="loansPie"></canvas>
                     </div>
                     <div id="loansLegend" class="flex-1 text-xs space-y-1.5 overflow-y-auto max-h-28 custom-scroll pr-1"></div>
                 </div>
 
-                <div class="card-box flex-1 min-h-[250px] p-0 overflow-hidden">
-                    <div class="bg-gray-50 px-4 py-2 border-b border-gray-100 text-xs font-bold text-gray-500">פירוט הלוואות</div>
-                    <div id="loansList" class="flex-1 overflow-y-auto custom-scroll p-2 h-48"></div>
+                <div class="card-box flex-1 min-h-[300px] p-0 overflow-hidden">
+                    <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 text-xs font-bold text-gray-500 sticky top-0">פירוט הלוואות</div>
+                    <div id="loansList" class="flex-1 overflow-y-auto custom-scroll p-2 max-h-[400px]"></div>
                 </div>
             </div>
 
         </div>
     </main>
 
-    <div id="addModal" class="fixed inset-0 bg-slate-900/40 hidden items-center justify-center z-50 p-4 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl overflow-y-auto max-h-[90vh] custom-scroll">
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 flex justify-around items-center z-40 no-print safe-area-pb">
+        <button onclick="exportAllData()" class="flex flex-col items-center gap-1 text-gray-500">
+            <span class="text-lg">📤</span>
+            <span class="text-[10px]">גיבוי</span>
+        </button>
+        
+        <button onclick="toggleModal()" class="bg-slate-800 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg -mt-8 border-4 border-slate-50">
+            <span class="text-2xl font-light mb-1">+</span>
+        </button>
+
+        <button onclick="printReport()" class="flex flex-col items-center gap-1 text-gray-500">
+            <span class="text-lg">🖨️</span>
+            <span class="text-[10px]">PDF</span>
+        </button>
+    </div>
+
+    <div id="addModal" class="fixed inset-0 bg-slate-900/60 hidden items-center justify-center z-50 p-4 backdrop-blur-sm transition-opacity no-print">
+        <div class="bg-white rounded-2xl w-full max-w-md p-5 shadow-2xl overflow-y-auto max-h-[90vh] custom-scroll animate-up">
             
             <div class="flex justify-between items-center mb-5">
                 <h3 class="text-lg font-bold text-slate-800">עדכון נתונים</h3>
-                <button onclick="toggleModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 transition">✕</button>
+                <button onclick="toggleModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600">✕</button>
             </div>
 
-            <div class="grid grid-cols-2 gap-3 mb-5 p-1 bg-gray-50 rounded-xl">
+            <div class="grid grid-cols-2 gap-3 mb-5 p-1 bg-gray-100 rounded-xl">
                 <div id="tabSavings" onclick="switchTab('savings')" class="tab-btn active-save">הוסף נכס 💰</div>
                 <div id="tabLoans" onclick="switchTab('loans')" class="tab-btn">הוסף חוב 📉</div>
             </div>
@@ -199,17 +243,17 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">תאריך</label>
-                        <input type="date" id="dateInput" class="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-slate-200 outline-none">
+                        <input type="date" id="dateInput" class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-500">
                     </div>
                     <div>
                         <label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">סכום עדכני</label>
-                        <input type="number" id="amountInput" placeholder="₪" class="w-full bg-white border border-gray-200 rounded-lg p-2.5 font-bold text-lg focus:ring-2 focus:ring-slate-200 outline-none">
+                        <input type="number" id="amountInput" placeholder="₪" class="w-full bg-white border border-gray-200 rounded-lg p-3 font-bold text-lg outline-none focus:border-blue-500">
                     </div>
                 </div>
 
                 <div>
                     <label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">שיוך (בעלים)</label>
-                    <select id="ownerInput" class="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-sm outline-none">
+                    <select id="ownerInput" class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-500">
                         <option>אבא</option>
                         <option>אמא</option>
                         <option>ילד 1</option>
@@ -220,7 +264,7 @@
 
                 <div id="savingsTypeGroup">
                     <label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">סוג הנכס</label>
-                    <select id="savingsType" class="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-sm outline-none">
+                    <select id="savingsType" class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-500">
                         <option>פנסיה</option>
                         <option>קרן השתלמות</option>
                         <option>חיסכון בבנק / פיקדון</option>
@@ -233,12 +277,12 @@
                         <label class="text-[10px] text-slate-500 font-bold mb-2 block uppercase">דמי ניהול (אופציונלי)</label>
                         <div class="flex gap-3">
                             <div class="relative w-1/2">
-                                <span class="absolute right-2 top-2 text-xs text-gray-400">%</span>
-                                <input id="feeDeposit" type="number" step="0.1" placeholder="מהפקדה" class="w-full p-1.5 pr-6 text-sm rounded border border-gray-200">
+                                <span class="absolute right-3 top-2.5 text-xs text-gray-400">%</span>
+                                <input id="feeDeposit" type="number" step="0.1" placeholder="מהפקדה" class="w-full p-2 pr-6 text-sm rounded border border-gray-200">
                             </div>
                             <div class="relative w-1/2">
-                                <span class="absolute right-2 top-2 text-xs text-gray-400">%</span>
-                                <input id="feeAccum" type="number" step="0.01" placeholder="מצבירה" class="w-full p-1.5 pr-6 text-sm rounded border border-gray-200">
+                                <span class="absolute right-3 top-2.5 text-xs text-gray-400">%</span>
+                                <input id="feeAccum" type="number" step="0.01" placeholder="מצבירה" class="w-full p-2 pr-6 text-sm rounded border border-gray-200">
                             </div>
                         </div>
                     </div>
@@ -246,7 +290,7 @@
 
                 <div id="loansTypeGroup" class="hidden">
                     <label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">סוג החוב</label>
-                    <select id="loansType" class="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-sm outline-none">
+                    <select id="loansType" class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-500">
                         <option>משכנתא</option>
                         <option>הלוואה לרכב</option>
                         <option>הלוואה מהורים</option>
@@ -256,20 +300,22 @@
 
                     <div class="mt-3">
                         <label class="text-[11px] font-bold text-gray-500 uppercase mb-1 block">סכום ההלוואה המקורי (אופציונלי)</label>
-                        <input type="number" id="originalAmountInput" placeholder="₪ סכום שנלקח" class="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-sm outline-none">
+                        <input type="number" id="originalAmountInput" placeholder="₪ סכום שנלקח" class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-blue-500">
                     </div>
                 </div>
 
                 <button onclick="saveEntry()" class="btn-action bg-emerald-600 mt-2 shadow-lg shadow-emerald-100" id="saveBtn">שמור נכס</button>
             </div>
 
-            <div class="flex justify-between mt-6 pt-4 border-t border-gray-100 text-xs text-gray-400 font-medium">
-                <button onclick="downloadTemplate()" class="hover:text-blue-600 transition flex items-center gap-1">📥 הורד תבנית</button>
-                <button onclick="clearAllData()" class="hover:text-red-500 transition flex items-center gap-1">🗑️ איפוס הכל</button>
-                <label class="cursor-pointer hover:text-blue-600 transition flex items-center gap-1">
-                    📂 ייבוא אקסל
-                    <input type="file" id="excelFile" class="hidden" accept=".xlsx,.xls">
-                </label>
+            <div class="flex justify-between mt-6 pt-4 border-t border-gray-100 text-xs text-gray-400 font-medium items-center">
+                <span>ייבוא/איפוס נתונים:</span>
+                <div class="flex gap-3">
+                    <button onclick="clearAllData()" class="text-red-500 bg-red-50 px-3 py-1 rounded hover:bg-red-100">איפוס</button>
+                    <label class="text-blue-600 bg-blue-50 px-3 py-1 rounded cursor-pointer hover:bg-blue-100">
+                        טען אקסל
+                        <input type="file" id="excelFile" class="hidden" accept=".xlsx,.xls">
+                    </label>
+                </div>
             </div>
         </div>
     </div>
@@ -319,6 +365,11 @@
                 btnSave.innerText = 'שמור חוב';
                 btnSave.className = 'btn-action bg-red-600 mt-2 shadow-lg shadow-red-100';
             }
+        }
+
+        // --- הדפסה ל-PDF ---
+        function printReport() {
+            window.print();
         }
 
         // --- שמירה ---
@@ -415,12 +466,15 @@
                     amount: item.Amount,
                     diff: diff,
                     date: item.Date,
-                    original: item.OriginalAmount || 0, // שומרים את המקורי האחרון שהוזן
+                    original: item.OriginalAmount || 0,
                     fees: (item.FeeDeposit || item.FeeAccum) ? `דמי ניהול: ${item.FeeDeposit}% / ${item.FeeAccum}%` : ''
                 };
             });
 
-            Object.keys(latestMap).forEach(key => {
+            // ממיין כדי שהחדשים יהיו למעלה
+            const keys = Object.keys(latestMap).reverse(); // או כל לוגיקת מיון אחרת
+
+            keys.forEach(key => {
                 const [owner, type] = key.split('_');
                 const info = changesMap[key];
                 
@@ -444,18 +498,17 @@
                      diffColorClass = diffVal < 0 ? 'text-red-500 font-bold' : 'text-emerald-500 font-bold';
                 }
 
-                // לוגיקת סכום מקורי (רק להלוואות)
                 let originalText = '';
                 if (listType === 'liability' && info.original > 0) {
                     const percentLeft = Math.min(100, Math.round((info.amount / info.original) * 100));
                     originalText = `
-                        <div class="mt-1.5 w-full">
+                        <div class="mt-2 w-full">
                             <div class="flex justify-between text-[9px] text-gray-400 mb-0.5">
-                                <span>יתרה: ${percentLeft}%</span>
+                                <span>נותר: ${percentLeft}%</span>
                                 <span>מקור: ₪${info.original.toLocaleString()}</span>
                             </div>
                             <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                                <div class="bg-red-400 h-1.5 rounded-full transition-all duration-500" style="width: ${percentLeft}%"></div>
+                                <div class="bg-red-400 h-1.5 rounded-full" style="width: ${percentLeft}%"></div>
                             </div>
                         </div>
                     `;
@@ -498,6 +551,7 @@
             });
 
             if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+            // אם אין נתונים לא מציירים, אבל נשאיר קנבס ריק למניעת שגיאות
             if (totals.length === 0) return;
 
             chartInstances[canvasId] = new Chart(ctx, {
@@ -549,7 +603,10 @@
             const bgColors = labels.map(l => colorMap[l] || '#94a3b8');
 
             if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
-            if (dataVals.length === 0) return;
+            if (dataVals.length === 0) {
+                legend.innerHTML = '<div class="text-gray-300 text-center">אין נתונים</div>';
+                return;
+            }
 
             chartInstances[canvasId] = new Chart(ctx, {
                 type: 'doughnut',
@@ -565,7 +622,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    cutout: '65%'
+                    cutout: '70%'
                 }
             });
 
@@ -583,12 +640,39 @@
         }
 
         function clearAllData() {
-            if (confirm("האם למחוק הכל?")) {
+            if (confirm("האם למחוק את כל הנתונים? פעולה זו בלתי הפיכה.")) {
                 localStorage.clear();
                 savingsData = [];
                 loansData = [];
                 renderAll();
+                showToast();
             }
+        }
+
+        // --- ייצוא מלא לאקסל ---
+        function exportAllData() {
+            if (savingsData.length === 0 && loansData.length === 0) {
+                alert("אין נתונים לייצוא");
+                return;
+            }
+
+            const wb = XLSX.utils.book_new();
+            
+            // גיליון נכסים
+            if (savingsData.length > 0) {
+                const ws1 = XLSX.utils.json_to_sheet(savingsData);
+                XLSX.utils.book_append_sheet(wb, ws1, "Savings");
+            }
+            
+            // גיליון חובות
+            if (loansData.length > 0) {
+                const ws2 = XLSX.utils.json_to_sheet(loansData);
+                XLSX.utils.book_append_sheet(wb, ws2, "Loans");
+            }
+
+            // יצירת שם קובץ עם תאריך
+            const dateStr = new Date().toISOString().slice(0,10);
+            XLSX.writeFile(wb, `MyFinance_Backup_${dateStr}.xlsx`);
         }
 
         function downloadTemplate() {
@@ -640,6 +724,7 @@
 
                 localStorage.setItem('mySavings', JSON.stringify(savingsData));
                 localStorage.setItem('myLoans', JSON.stringify(loansData));
+                
                 renderAll();
                 showToast();
                 toggleModal();
